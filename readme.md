@@ -50,7 +50,7 @@ Exemplo de JSON enviado no POST/PUT:
 
 ## Deploy na Vercel
 
-O projeto usa Express e é detectado automaticamente pela Vercel (o app é exportado em `src/app.js`). Os arquivos de `public/` são servidos pela CDN da Vercel.
+O app Express é exportado em `api/index.js` e todas as rotas `/api/*` são direcionadas para ele pelo `vercel.json`. Os arquivos de `public/` (index.html, style.css, script.js) são servidos pela CDN da Vercel. Não use `outputDirectory: public` — isso publica só o front-end e faz a API retornar 404.
 
 Opção 1 — pelo site:
 1. Acesse https://vercel.com/new e importe o repositório `Santana73/CRUD---ATIVIDADE-PR-TICA`.
