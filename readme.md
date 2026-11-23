@@ -10,33 +10,20 @@ src/app.js                -> configura o Express (JSON, CORS, arquivos estático
 src/supabase.js           -> conexão com o banco Supabase
 src/routes/objetos.js     -> rotas da API (somente mapeamento dos endpoints)
 src/controllers/objetosController.js -> regras de negócio, validações, acesso ao banco e erros
+api/index.js              -> função serverless da Vercel (Express)
 public/index.html         -> interface do usuário
 public/script.js          -> comunicação front-end com a API (fetch + JSON)
 public/style.css          -> estilos da interface
-.env                      -> URL e chave do Supabase
+banco.sql                 -> criação da tabela no Supabase
+vercel.json               -> redireciona /api/* para a função do Express
 ```
 
-## Como executar
+## Como executar localmente
 
-1. Garanta que a tabela `objetos` já exista no projeto Supabase.
+1. No **SQL Editor** do Supabase, rode o conteúdo de `banco.sql` (cria a tabela `objetos`).
 2. Instale as dependências: `npm install`
 3. Inicie: `npm start`
 4. Acesse: http://localhost:3001
-
-## Publicar na Vercel
-
-1. Envie o projeto para um repositório Git e importe esse repositório na Vercel.
-2. Em **Settings > Environment Variables** do projeto na Vercel, configure `SUPABASE_URL` e `SUPABASE_KEY` com os valores do seu projeto Supabase. Não configure `PORT`; a Vercel gerencia a porta.
-3. Faça um novo deploy. A Vercel publicará os arquivos de `public/` e encaminhará as rotas `/api/*` para a aplicação Express.
-4. Acesse o domínio gerado pela Vercel. A API estará disponível no mesmo domínio em `/api` e `/api/objetos`.
-
-O arquivo `.env` é usado somente na execução local e não deve ser enviado ao repositório. Como ele já estava versionado, remova-o do controle de versão e troque/rotacione a chave do Supabase antes de publicar:
-
-```powershell
-git rm --cached .env
-```
-
-Mantenha o `.env` no computador e configure os valores diretamente no painel da Vercel.
 
 ## API
 
@@ -64,24 +51,19 @@ Exemplo de JSON enviado no POST/PUT:
 
 ## Deploy na Vercel
 
-O app Express é exportado em `api/index.js` e todas as rotas `/api/*` são direcionadas para ele pelo `vercel.json`. Os arquivos de `public/` (index.html, style.css, script.js) são servidos pela CDN da Vercel. Não use `outputDirectory: public` — isso publica só o front-end e faz a API retornar 404.
+O app Express é exportado em `api/index.js` e todas as rotas `/api/*` são direcionadas para ele pelo `vercel.json`. Os arquivos de `public/` são servidos pela CDN da Vercel.
 
-Opção 1 — pelo site:
-1. Acesse https://vercel.com/new e importe o repositório `Santana73/CRUD---ATIVIDADE-PR-TICA`.
-2. Mantenha as configurações padrão (Framework: Express/Other) e clique em **Deploy**.
+**Importante:** não configure `outputDirectory: public` na Vercel — isso publica somente o front-end e faz `/api/objetos` retornar 404 em HTML. Deixe **Output Directory vazio** e **Root Directory** na raiz do repositório.
+
+1. Acesse https://vercel.com/new e importe o repositório.
+2. Mantenha as configurações padrão e clique em **Deploy**.
 3. A URL será `https://<nome-do-projeto>.vercel.app`.
+4. Teste `https://<nome-do-projeto>.vercel.app/api` — deve responder `{"mensagem":"API de Achados e Perdidos funcionando"}`.
 
-Opção 2 — pela CLI:
-```bash
-npm install -g vercel
-vercel login
-vercel deploy --prod
-```
-
-A chave do Supabase usada é uma *publishable key* (pública) e já está no `.env`, que vai junto do deploy. Também é possível cadastrar `SUPABASE_URL` e `SUPABASE_KEY` como variáveis de ambiente no painel da Vercel.
+A URL e a chave do Supabase já estão como padrão em `src/supabase.js` (a chave é *publishable*, ou seja, pública). Se quiser, configure `SUPABASE_URL` e `SUPABASE_KEY` em **Settings > Environment Variables** da Vercel. Não configure `PORT`.
 
 ## Validações e tratamento de erros
 
 - Campos obrigatórios: descrição, categoria, local, data e situação.
-- Situação aceita somente: `Disponível` ou `Devolvido`.
+- Situação aceita somente: `Disponível` ou `Devolvido` (sem acento também funciona).
 - ID inválido retorna `400`; objeto não encontrado retorna `404`; falha no banco retorna `500`.
