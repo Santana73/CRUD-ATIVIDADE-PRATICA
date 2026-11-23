@@ -48,6 +48,24 @@ Exemplo de JSON enviado no POST/PUT:
 }
 ```
 
+## Deploy na Vercel
+
+O projeto usa Express e é detectado automaticamente pela Vercel (o app é exportado em `src/app.js`). Os arquivos de `public/` são servidos pela CDN da Vercel.
+
+Opção 1 — pelo site:
+1. Acesse https://vercel.com/new e importe o repositório `Santana73/CRUD---ATIVIDADE-PR-TICA`.
+2. Mantenha as configurações padrão (Framework: Express/Other) e clique em **Deploy**.
+3. A URL será `https://<nome-do-projeto>.vercel.app`.
+
+Opção 2 — pela CLI:
+```bash
+npm install -g vercel
+vercel login
+vercel deploy --prod
+```
+
+A chave do Supabase usada é uma *publishable key* (pública) e já está no `.env`, que vai junto do deploy. Também é possível cadastrar `SUPABASE_URL` e `SUPABASE_KEY` como variáveis de ambiente no painel da Vercel.
+
 ## Validações e tratamento de erros
 
 - Campos obrigatórios: descrição, categoria, local, data e situação.
