@@ -13,16 +13,30 @@ src/controllers/objetosController.js -> regras de negócio, validações, acesso
 public/index.html         -> interface do usuário
 public/script.js          -> comunicação front-end com a API (fetch + JSON)
 public/style.css          -> estilos da interface
-banco.sql                 -> criação da tabela no Supabase
 .env                      -> URL e chave do Supabase
 ```
 
 ## Como executar
 
-1. No **SQL Editor** do Supabase, rode o conteúdo de `banco.sql` (cria a tabela `objetos`).
+1. Garanta que a tabela `objetos` já exista no projeto Supabase.
 2. Instale as dependências: `npm install`
 3. Inicie: `npm start`
 4. Acesse: http://localhost:3001
+
+## Publicar na Vercel
+
+1. Envie o projeto para um repositório Git e importe esse repositório na Vercel.
+2. Em **Settings > Environment Variables** do projeto na Vercel, configure `SUPABASE_URL` e `SUPABASE_KEY` com os valores do seu projeto Supabase. Não configure `PORT`; a Vercel gerencia a porta.
+3. Faça um novo deploy. A Vercel publicará os arquivos de `public/` e encaminhará as rotas `/api/*` para a aplicação Express.
+4. Acesse o domínio gerado pela Vercel. A API estará disponível no mesmo domínio em `/api` e `/api/objetos`.
+
+O arquivo `.env` é usado somente na execução local e não deve ser enviado ao repositório. Como ele já estava versionado, remova-o do controle de versão e troque/rotacione a chave do Supabase antes de publicar:
+
+```powershell
+git rm --cached .env
+```
+
+Mantenha o `.env` no computador e configure os valores diretamente no painel da Vercel.
 
 ## API
 
